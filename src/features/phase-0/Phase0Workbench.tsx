@@ -49,22 +49,6 @@ export function Phase0Workbench({
         </div>
 
         <aside className="workbench__checklist">
-          <h3>我的身份</h3>
-          <div className="role-selector">
-            <button
-              className={`role-btn ${userRole === "volunteer" ? "role-btn--active" : ""}`}
-              onClick={() => setUserRole("volunteer")}
-            >
-              🧑‍🤝‍🧑 志工
-            </button>
-            <button
-              className={`role-btn ${userRole === "government" ? "role-btn--active" : ""}`}
-              onClick={() => setUserRole("government")}
-            >
-              🏛️ 政府部門
-            </button>
-          </div>
-
           <h3>快速分類看板</h3>
           <div className="routing-board" aria-label="快速分類看板">
             <section
@@ -102,6 +86,22 @@ export function Phase0Workbench({
           <p className="workbench__hint">
             這裡統計建議分類，不代表已確認、已派工或已通報。
           </p>
+
+          <h3>我的身份</h3>
+          <div className="role-selector">
+            <button
+              className={`role-btn ${userRole === "volunteer" ? "role-btn--active" : ""}`}
+              onClick={() => setUserRole("volunteer")}
+            >
+              🧑‍🤝‍🧑 志工
+            </button>
+            <button
+              className={`role-btn ${userRole === "government" ? "role-btn--active" : ""}`}
+              onClick={() => setUserRole("government")}
+            >
+              🏛️ 政府部門
+            </button>
+          </div>
 
           <h3>第一階段完成檢查</h3>
           <ul>
