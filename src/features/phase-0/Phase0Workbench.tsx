@@ -87,7 +87,6 @@ export function Phase0Workbench({
             這裡統計建議分類，不代表已確認、已派工或已通報。
           </p>
 
-          <h3>我的身份</h3>
           <div className="role-selector">
             <button
               className={`role-btn ${userRole === "volunteer" ? "role-btn--active" : ""}`}
@@ -102,6 +101,8 @@ export function Phase0Workbench({
               🏛️ 政府部門
             </button>
           </div>
+
+          <h3>我的身份</h3>
 
           <h3>第一階段完成檢查</h3>
           <ul>
