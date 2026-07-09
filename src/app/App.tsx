@@ -22,6 +22,10 @@ export function App() {
     }
   }
 
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   return (
     <main className="layout">
       <header className="hero">
@@ -58,6 +62,12 @@ export function App() {
           </div>
         )}
       </section>
+
+      <footer className="footer">
+        <button className="back-to-top-btn" onClick={scrollToTop}>
+          ↑ 一鍵返回
+        </button>
+      </footer>
     </main>
   );
 }

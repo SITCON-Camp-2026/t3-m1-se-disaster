@@ -715,6 +715,32 @@ button {
   color: #9f1f17;
 }
 
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  padding: 24px 0;
+}
+
+.back-to-top-btn {
+  padding: 12px 24px;
+  border: 2px solid #245d9d;
+  border-radius: 8px;
+  background: #f1d79f;
+  color: #245d9d;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-to-top-btn:hover {
+  background: #245d9d;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgb(36 93 157 / 20%);
+}
+
 @media (max-width: 860px) {
   .phase0-split {
     grid-template-columns: 1fr;
