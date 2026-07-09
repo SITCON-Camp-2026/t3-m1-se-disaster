@@ -1,36 +1,25 @@
 import { useState } from "react";
 import messyReports from "../fixtures/phase-0/messy-reports.json";
 import { EmptyState } from "../components/EmptyState";
+import { Phase0RecordSelector } from "../features/phase-0/Phase0RecordSelector";
 import { Phase0RawInfoPanel } from "../features/phase-0/Phase0RawInfoPanel";
 import { Phase0Workbench } from "../features/phase-0/Phase0Workbench";
-import type {
-  Phase0JudgementDraft,
-  Phase0MessyRecord,
-} from "../features/phase-0/phase0-types";
+import type { Phase0MessyRecord } from "../features/phase-0/phase0-types";
 
 const phase0Records = messyReports satisfies Phase0MessyRecord[];
+const emptyDrafts = {};
 
 export function App() {
   const [selectedRecordId, setSelectedRecordId] = useState(
     phase0Records[0]?.id ?? "",
   );
-  const [drafts, setDrafts] = useState<Record<string, Phase0JudgementDraft>>(
-    {},
-  );
 
-  function saveDraft(draft: Phase0JudgementDraft) {
-    setDrafts((currentDrafts) => ({
-      ...currentDrafts,
-      [draft.messyRecordId]: draft,
-    }));
-  }
-
-  function deleteDraft(recordId: string) {
-    setDrafts((currentDrafts) => {
-      const nextDrafts = { ...currentDrafts };
-      delete nextDrafts[recordId];
-      return nextDrafts;
-    });
+  function queryRecord(recordId: string) {
+    setSelectedRecordId(recordId);
+    const rawRecord = document.getElementById(`phase0-record-${recordId}`);
+    if (typeof rawRecord?.scrollIntoView === "function") {
+      rawRecord.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   return (
@@ -48,21 +37,24 @@ export function App() {
         {phase0Records.length === 0 ? (
           <EmptyState message="目前沒有資料" />
         ) : (
-          <div className="phase0-split">
-            <Phase0RawInfoPanel
+          <div className="phase0-page">
+            <Phase0RecordSelector
               records={phase0Records}
-              drafts={drafts}
+              drafts={emptyDrafts}
               selectedRecordId={selectedRecordId}
-              onSelect={setSelectedRecordId}
+              onQuery={queryRecord}
             />
-            <Phase0Workbench
-              records={phase0Records}
-              drafts={drafts}
-              selectedRecordId={selectedRecordId}
-              onSelect={setSelectedRecordId}
-              onSaveDraft={saveDraft}
-              onDeleteDraft={deleteDraft}
-            />
+            <div className="phase0-split">
+              <Phase0RawInfoPanel
+                records={phase0Records}
+                drafts={emptyDrafts}
+                selectedRecordId={selectedRecordId}
+              />
+              <Phase0Workbench
+                records={phase0Records}
+                selectedRecordId={selectedRecordId}
+              />
+            </div>
           </div>
         )}
       </section>

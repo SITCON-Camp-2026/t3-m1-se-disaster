@@ -1,6 +1,7 @@
 import { SourceLabel } from "../../components/SourceLabel";
 import { StatusBadge } from "../../components/StatusBadge";
 import { formatDateTime } from "../../lib/date";
+import { suggestPhase0ResponsibleParty } from "./phase0-heuristics";
 import type { Phase0JudgementDraft, Phase0MessyRecord } from "./phase0-types";
 
 const routingLabels: Record<Phase0JudgementDraft["responsibleParty"], string> =
@@ -11,31 +12,29 @@ const routingLabels: Record<Phase0JudgementDraft["responsibleParty"], string> =
     unknown: "尚未分類",
   };
 
-function suggestResponsibleParty(record: Phase0MessyRecord) {
-  const governmentKeywords = [
-    "道路封閉",
-    "官方公告",
-    "藥品",
-    "來電",
-    "同意公開",
-    "無法確認",
-  ];
+const externalReferenceUrl = "https://165.npa.gov.tw/#/";
 
-  return governmentKeywords.some((keyword) => record.rawText.includes(keyword))
-    ? "government"
-    : "volunteer";
+function ExternalReferenceLink() {
+  return (
+    <a
+      className="external-reference-link"
+      href={externalReferenceUrl}
+      rel="noreferrer"
+      target="_blank"
+    >
+      反詐騙網站：{externalReferenceUrl}
+    </a>
+  );
 }
 
 export function Phase0RawInfoPanel({
   records,
   drafts,
   selectedRecordId,
-  onSelect,
 }: {
   records: Phase0MessyRecord[];
   drafts: Record<string, Phase0JudgementDraft>;
   selectedRecordId: string;
-  onSelect: (recordId: string) => void;
 }) {
   const notCheckedRecords = records.filter(
     (record) => record.verificationStatus === "unverified",
@@ -62,7 +61,10 @@ export function Phase0RawInfoPanel({
       <section className="phase0-raw__group">
         <div className="phase0-raw__group-header">
           <div>
-            <h3>{title}</h3>
+            <div className="heading-with-link">
+              <h3>{title}</h3>
+              {title === "待人工確認" ? <ExternalReferenceLink /> : null}
+            </div>
             <p>{subtitle}</p>
           </div>
           <p>{items.length} 筆</p>
@@ -72,7 +74,7 @@ export function Phase0RawInfoPanel({
           {items.map((record) => {
             const draft = drafts[record.id];
             const savedRouting = draft?.responsibleParty;
-            const suggestedRouting = suggestResponsibleParty(record);
+            const suggestedRouting = suggestPhase0ResponsibleParty(record);
             const routing =
               savedRouting === "volunteer" || savedRouting === "government"
                 ? savedRouting
@@ -86,6 +88,7 @@ export function Phase0RawInfoPanel({
               <article
                 aria-label={`${record.id} 原始資訊`}
                 className={`record-card record-card--${routing} ${record.id === selectedRecordId ? "record-card--selected" : ""}`}
+                id={`phase0-record-${record.id}`}
                 key={record.id}
               >
                 <div
@@ -104,9 +107,6 @@ export function Phase0RawInfoPanel({
                   <SourceLabel sourceType={record.sourceType} />
                   <span>更新：{formatDateTime(record.updatedAt)}</span>
                 </div>
-                <button type="button" onClick={() => onSelect(record.id)}>
-                  送到整理工作台
-                </button>
               </article>
             );
           })}
@@ -116,23 +116,26 @@ export function Phase0RawInfoPanel({
   }
 
   return (
-    <div className="phase0-raw">
+    <div className="phase0-raw" id="phase0-raw-info">
       <div className="panel__header">
         <div>
-          <h2>原始資訊</h2>
+          <div className="heading-with-link">
+            <h2>原始資訊</h2>
+            <ExternalReferenceLink />
+          </div>
           <p>這些還不是整理後資料，不能直接當成行動依據。</p>
         </div>
         <p>{records.length} 筆資料</p>
       </div>
 
       {renderSection(
-        "Haven't checked",
+        "尚未查核",
         "這些資訊尚未查核，仍需進一步確認。",
         notCheckedRecords,
       )}
 
       {renderSection(
-        "Need human to check",
+        "待人工確認",
         "這些資訊需要人工確認，不能直接當成任務或發布內容。",
         needsHumanReviewRecords,
       )}
