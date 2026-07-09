@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { RecordCard } from "../../components/RecordCard";
 import { Phase0JudgementCard } from "./Phase0JudgementCard";
 import {
   createPhase0Judgement,
   suggestPhase0ResponsibleParty,
 } from "./phase0-heuristics";
-import type { Phase0MessyRecord } from "./phase0-types";
+import type { Phase0MessyRecord, Phase0UserRole } from "./phase0-types";
 
 export function Phase0Workbench({
   records,
@@ -13,6 +14,7 @@ export function Phase0Workbench({
   records: Phase0MessyRecord[];
   selectedRecordId: string;
 }) {
+  const [userRole, setUserRole] = useState<Phase0UserRole>("volunteer");
   const selectedRecord =
     records.find((record) => record.id === selectedRecordId) ?? records[0];
   const safetyBoundary = createPhase0Judgement(selectedRecord);
@@ -47,9 +49,31 @@ export function Phase0Workbench({
         </div>
 
         <aside className="workbench__checklist">
+          <h3>我的身份</h3>
+          <div className="role-selector">
+            <button
+              className={`role-btn ${userRole === "volunteer" ? "role-btn--active" : ""}`}
+              onClick={() => setUserRole("volunteer")}
+            >
+              🧑‍🤝‍🧑 志工
+            </button>
+            <button
+              className={`role-btn ${userRole === "government" ? "role-btn--active" : ""}`}
+              onClick={() => setUserRole("government")}
+            >
+              🏛️ 政府部門
+            </button>
+          </div>
+
           <h3>快速分類看板</h3>
           <div className="routing-board" aria-label="快速分類看板">
-            <section className="routing-board__lane routing-board__lane--volunteer">
+            <section
+              className={`routing-board__lane routing-board__lane--volunteer ${
+                userRole === "volunteer"
+                  ? "routing-board__lane--highlighted"
+                  : ""
+              }`}
+            >
               <p className="routing-board__label">建議：志工可處理</p>
               <p className="routing-board__count">
                 {volunteerSuggestionIds.length}
@@ -58,7 +82,13 @@ export function Phase0Workbench({
                 {volunteerSuggestionIds.join("、")}
               </p>
             </section>
-            <section className="routing-board__lane routing-board__lane--government">
+            <section
+              className={`routing-board__lane routing-board__lane--government ${
+                userRole === "government"
+                  ? "routing-board__lane--highlighted"
+                  : ""
+              }`}
+            >
               <p className="routing-board__label">建議：交給政府</p>
               <p className="routing-board__count">
                 {governmentSuggestionIds.length}

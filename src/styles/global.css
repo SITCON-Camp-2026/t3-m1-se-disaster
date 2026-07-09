@@ -619,6 +619,47 @@ button {
   overflow-wrap: anywhere;
 }
 
+.routing-board__lane--highlighted {
+  box-shadow:
+    0 0 0 3px #ffeb3b,
+    0 0 12px rgb(0 0 0 / 15%);
+  transform: scale(1.05);
+}
+
+.role-selector {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0 24px;
+}
+
+.role-btn {
+  flex: 1;
+  border: 2px solid #cfd8e3;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: #ffffff;
+  color: #5f6b7a;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.role-btn:hover {
+  border-color: #245d9d;
+  background: #eef6ff;
+}
+
+.role-btn--active {
+  border-color: #245d9d;
+  background: #245d9d;
+  color: #ffffff;
+}
+
+.role-btn--active:hover {
+  background: #1a4a8a;
+}
+
 .routing-summary__item {
   display: flex;
   align-items: baseline;

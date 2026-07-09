@@ -20,6 +20,8 @@ export type Phase0SuggestedNextStep =
 export type Phase0ResponsibleParty =
   "volunteer" | "government" | "do_not_assign" | "unknown";
 
+export type Phase0UserRole = "volunteer" | "government";
+
 export type Phase0MessyRecord = {
   id: string;
   rawText: string;
