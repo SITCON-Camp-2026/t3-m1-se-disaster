@@ -26,6 +26,11 @@ describe("phase 0 heuristics", () => {
     expect(
       judgements.filter((judgement) => judgement.confidence === "low"),
     ).toHaveLength(messyReports.length);
+    expect(
+      judgements.filter(
+        (judgement) => judgement.responsibleParty === "unknown",
+      ),
+    ).toHaveLength(messyReports.length);
   });
 
   it("does not treat review-needed records as confirmed facts", () => {

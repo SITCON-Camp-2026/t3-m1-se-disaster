@@ -3,26 +3,34 @@ import messyReports from "../fixtures/phase-0/messy-reports.json";
 import { EmptyState } from "../components/EmptyState";
 import { Phase0RawInfoPanel } from "../features/phase-0/Phase0RawInfoPanel";
 import { Phase0Workbench } from "../features/phase-0/Phase0Workbench";
-import type { Phase0MessyRecord } from "../features/phase-0/phase0-types";
-
-type TabKey = "raw" | "workbench";
-
-const tabs: Array<{ key: TabKey; label: string }> = [
-  { key: "raw", label: "原始資訊" },
-  { key: "workbench", label: "整理工作台" },
-];
+import type {
+  Phase0JudgementDraft,
+  Phase0MessyRecord,
+} from "../features/phase-0/phase0-types";
 
 const phase0Records = messyReports satisfies Phase0MessyRecord[];
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<TabKey>("raw");
   const [selectedRecordId, setSelectedRecordId] = useState(
     phase0Records[0]?.id ?? "",
   );
+  const [drafts, setDrafts] = useState<Record<string, Phase0JudgementDraft>>(
+    {},
+  );
 
-  function selectForWorkbench(recordId: string) {
-    setSelectedRecordId(recordId);
-    setActiveTab("workbench");
+  function saveDraft(draft: Phase0JudgementDraft) {
+    setDrafts((currentDrafts) => ({
+      ...currentDrafts,
+      [draft.messyRecordId]: draft,
+    }));
+  }
+
+  function deleteDraft(recordId: string) {
+    setDrafts((currentDrafts) => {
+      const nextDrafts = { ...currentDrafts };
+      delete nextDrafts[recordId];
+      return nextDrafts;
+    });
   }
 
   return (
@@ -36,34 +44,26 @@ export function App() {
         </p>
       </header>
 
-      <nav className="tabs" aria-label="第一階段工作區">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            className={activeTab === tab.key ? "active" : ""}
-            type="button"
-            onClick={() => setActiveTab(tab.key)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </nav>
-
       <section className="panel">
         {phase0Records.length === 0 ? (
           <EmptyState message="目前沒有資料" />
-        ) : activeTab === "raw" ? (
-          <Phase0RawInfoPanel
-            records={phase0Records}
-            selectedRecordId={selectedRecordId}
-            onSelect={selectForWorkbench}
-          />
         ) : (
-          <Phase0Workbench
-            records={phase0Records}
-            selectedRecordId={selectedRecordId}
-            onSelect={setSelectedRecordId}
-          />
+          <div className="phase0-split">
+            <Phase0RawInfoPanel
+              records={phase0Records}
+              drafts={drafts}
+              selectedRecordId={selectedRecordId}
+              onSelect={setSelectedRecordId}
+            />
+            <Phase0Workbench
+              records={phase0Records}
+              drafts={drafts}
+              selectedRecordId={selectedRecordId}
+              onSelect={setSelectedRecordId}
+              onSaveDraft={saveDraft}
+              onDeleteDraft={deleteDraft}
+            />
+          </div>
         )}
       </section>
     </main>

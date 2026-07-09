@@ -6,4 +6,8 @@ const repoName = process.env.GITHUB_REPOSITORY?.split("/")[1];
 export default defineConfig({
   plugins: [react()],
   base: repoName ? `/${repoName}/` : "/",
+  server: {
+    port: 5173,
+    strictPort: true,
+  },
 });
