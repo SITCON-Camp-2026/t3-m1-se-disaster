@@ -621,9 +621,10 @@ button {
 
 .routing-board__lane--highlighted {
   box-shadow:
-    0 0 0 3px #ffeb3b,
-    0 0 12px rgb(0 0 0 / 15%);
+    0 0 0 4px #ffeb3b,
+    0 0 20px rgb(255 235 59 / 60%);
   transform: scale(1.05);
+  filter: brightness(1.1);
 }
 
 .role-selector {
